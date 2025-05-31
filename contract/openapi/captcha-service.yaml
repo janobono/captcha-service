@@ -1,0 +1,118 @@
+openapi: 3.1.1
+info:
+  title: Captcha Service
+  version: 1.0.0
+paths:
+  /captcha:
+    get:
+      operationId: getCaptcha
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Captcha'
+          description: OK
+        "4XX":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+          description: Client error
+        "5XX":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+          description: Server error
+      tags:
+        - captcha-controller
+  /livez:
+    get:
+      operationId: livez
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+          description: OK
+        "4XX":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+          description: Client error
+        "5XX":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+          description: Server error
+      tags:
+        - health-controller
+  /readyz:
+    get:
+      operationId: readyz
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+          description: OK
+        "4XX":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+          description: Client error
+        "5XX":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+          description: Server error
+      tags:
+        - health-controller
+components:
+  responses:
+    client-error:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorMessage'
+      description: Client error
+    server-error:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorMessage'
+      description: Server error
+  schemas:
+    Captcha:
+      type: object
+      properties:
+        captchaToken:
+          type: string
+        captchaImage:
+          type: string
+    ErrorCode:
+      type: string
+      enum:
+        - UNKNOWN
+    ErrorMessage:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+        message:
+          type: string
+        timestamp:
+          format: date-time
+          type: string
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string

@@ -1,0 +1,8 @@
+services:
+  captcha-service:
+    image: captcha-service:latest
+    ports:
+      - "50052:50052"
+      - "8080:8080"
+    restart: unless-stopped
+    env_file: "captcha-service.env"

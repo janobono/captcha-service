@@ -1,0 +1,11 @@
+/bin
+/generated
+.git
+.env.local
+.gitignore
+build.sh
+docker-compose.yml
+Dockerfile
+infra.yaml
+openapitools.json
+README.md
