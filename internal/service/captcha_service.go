@@ -84,7 +84,7 @@ func (s *CaptchaService) Validate(ctx context.Context, captchaData *CaptchaData)
 		return false
 	}
 
-	claims, err := jwtToken.ParseToken(captchaData.CaptchaToken)
+	claims, err := jwtToken.ParseToken(ctx, captchaData.CaptchaToken)
 	if err != nil {
 		return false
 	}

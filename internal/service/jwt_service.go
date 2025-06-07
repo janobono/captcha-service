@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"crypto/rand"
 	"crypto/rsa"
 	"encoding/base64"
@@ -67,7 +68,7 @@ func (j *JwtService) getJwtToken() (*security.JwtToken, error) {
 	return token, nil
 }
 
-func (j *JwtService) getPublicKey(kid string) (interface{}, error) {
+func (j *JwtService) getPublicKey(ctx context.Context, kid string) (interface{}, error) {
 	j.mutex.Lock()
 	defer j.mutex.Unlock()
 
