@@ -59,7 +59,7 @@ func (j *JwtService) getJwtToken() (*security.JwtToken, error) {
 		kid,
 		j.appConfig.TokenIssuer,
 		j.appConfig.TokenExpiresIn,
-		now.Add(j.appConfig.TokenJwkExpiresIn*time.Second),
+		now.Add(j.appConfig.TokenJwkExpiresIn),
 		j.getPublicKey,
 	)
 
