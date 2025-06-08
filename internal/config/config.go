@@ -4,7 +4,6 @@ import (
 	"github.com/janobono/go-util/common"
 	"github.com/joho/godotenv"
 	"log"
-	"strings"
 	"time"
 )
 
@@ -63,17 +62,12 @@ func InitConfig() *ServerConfig {
 			TokenJwkExpiresIn: time.Duration(common.EnvInt("CAPTCHA_TOKEN_JWK_EXPIRES_IN")) * time.Minute,
 		},
 		CorsConfig: &CorsConfig{
-			AllowedOrigins:   EnvSlice("CORS_ALLOWED_ORIGINS"),
-			AllowedMethods:   EnvSlice("CORS_ALLOWED_METHODS"),
-			AllowedHeaders:   EnvSlice("CORS_ALLOWED_HEADERS"),
-			ExposedHeaders:   EnvSlice("CORS_EXPOSED_HEADERS"),
+			AllowedOrigins:   common.EnvSlice("CORS_ALLOWED_ORIGINS"),
+			AllowedMethods:   common.EnvSlice("CORS_ALLOWED_METHODS"),
+			AllowedHeaders:   common.EnvSlice("CORS_ALLOWED_HEADERS"),
+			ExposedHeaders:   common.EnvSlice("CORS_EXPOSED_HEADERS"),
 			AllowCredentials: common.EnvBool("CORS_ALLOW_CREDENTIALS"),
 			MaxAge:           time.Duration(common.EnvInt("CORS_MAX_AGE")) * time.Hour,
 		},
 	}
-}
-
-func EnvSlice(key string) []string {
-	value := common.Env(key)
-	return strings.Split(value, ",")
 }
