@@ -36,6 +36,7 @@ docker compose down
 
 If you have `make` and Go installed, you can use these prepared targets:
 
+- `tools` - to install all tools and modules
 - `clean` - to delete all generated sources
 - `generate-openapi` - generate source files from openapi (http) into `generated/openapi`
 - `generate-proto` - generate source files from proto (gRPC) into `generated/proto`

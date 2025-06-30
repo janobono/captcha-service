@@ -44,10 +44,10 @@ github.com/google/go-cmp v0.7.0/go.mod h1:pXiqmnSA92OHEEa9HXL2W4E7lf9JzCmGVUdgjX
 github.com/google/gofuzz v1.0.0/go.mod h1:dBl0BpW6vV/+mYPU4Po3pmUjxk6FQPldtuIdl/M65Eg=
 github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=
 github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
-github.com/janobono/go-util/common v1.0.0 h1:UgMjyUiGVT+YyLHfYfqnzEw59h5o/YDONgHosLQ4A2w=
-github.com/janobono/go-util/common v1.0.0/go.mod h1:k9YFczmRZ+w/1DCP15gPK+kYFaTSKYCqk2spnnkAp0k=
-github.com/janobono/go-util/security v1.0.0 h1:yfI4ZFWNqzbQlRG2XKEiim3wVu858cdyzro7jkav3Bc=
-github.com/janobono/go-util/security v1.0.0/go.mod h1:9wRJK+//dYmCodDQOctvZnOsQ7k172eJ74h5gs2JpPo=
+github.com/janobono/go-util/common v1.1.0 h1:wLMq7kgadYGttixiGTtPclGd0MtEjSddkhxClJbRlws=
+github.com/janobono/go-util/common v1.1.0/go.mod h1:k9YFczmRZ+w/1DCP15gPK+kYFaTSKYCqk2spnnkAp0k=
+github.com/janobono/go-util/security v1.1.0 h1:OS67u84TOfkGihrJ9GDexBi9Z99gvdbQSFPNDzJjOGU=
+github.com/janobono/go-util/security v1.1.0/go.mod h1:DlvZMJXIirPsMwSupO45Qq/eYrSa/YZSZRVP0H5Ucyw=
 github.com/joho/godotenv v1.5.1 h1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=
 github.com/joho/godotenv v1.5.1/go.mod h1:f4LDr5Voq0i2e/R5DDNOoa2zzDfwtkZa6DnEwAbqwq4=
 github.com/json-iterator/go v1.1.12 h1:PV8peI4a0ysnczrg+LtxykD8LfKY9ML6u2jnxaEnrnM=
