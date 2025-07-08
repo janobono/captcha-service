@@ -2,6 +2,7 @@ package impl
 
 import (
 	"context"
+	"github.com/janobono/captcha-service/generated/openapi"
 	"github.com/janobono/captcha-service/generated/proto"
 	"github.com/janobono/captcha-service/internal/service"
 	"github.com/janobono/go-util/common"
@@ -46,9 +47,9 @@ func (c *captchaServer) Validate(ctx context.Context, data *proto.CaptchaData) (
 		return nil, status.Error(codes.InvalidArgument, "captcha token and text must be provided")
 	}
 
-	valid := c.captchaService.Validate(ctx, &service.CaptchaData{
+	result := c.captchaService.Validate(ctx, &openapi.CaptchaData{
 		CaptchaToken: data.Token,
-		CaptchaValue: data.Text,
+		CaptchaText:  data.Text,
 	})
-	return &wrapperspb.BoolValue{Value: valid}, nil
+	return &wrapperspb.BoolValue{Value: result.Value}, nil
 }

@@ -7,7 +7,7 @@ require (
 	github.com/gin-contrib/cors v1.7.6
 	github.com/gin-gonic/gin v1.10.1
 	github.com/golang-jwt/jwt/v5 v5.2.2
-	github.com/janobono/go-util/common v1.1.0
+	github.com/janobono/go-util/common v1.2.0
 	github.com/janobono/go-util/security v1.1.0
 	github.com/joho/godotenv v1.5.1
 	github.com/stretchr/testify v1.10.0

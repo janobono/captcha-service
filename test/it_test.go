@@ -1,6 +1,7 @@
 package test
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -8,6 +9,7 @@ import (
 	"github.com/janobono/captcha-service/generated/proto"
 	"github.com/janobono/captcha-service/internal/config"
 	"github.com/janobono/captcha-service/internal/server"
+	"github.com/janobono/go-util/common"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -100,6 +102,71 @@ func TestIntegrationSomething(t *testing.T) {
 		if result.Status != "UP" {
 			t.Errorf("wrong livez status: got %s", result.Status)
 		}
+	})
+
+	t.Run("REST: readyz", func(t *testing.T) {
+		resp, err := http.Get(fmt.Sprintf("http://localhost%s/api/readyz", serverConfig.HTTPAddress))
+		if err != nil {
+			t.Fatalf("REST call failed: %v", err)
+		}
+		defer resp.Body.Close()
+
+		if resp.StatusCode != http.StatusOK {
+			t.Fatalf("Unexpected status: got %d", resp.StatusCode)
+		}
+
+		var result openapi.HealthStatus
+		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+			t.Fatalf("Failed to parse REST response: %v", err)
+		}
+
+		if result.Status != "READY" {
+			t.Errorf("wrong readyz status: got %s", result.Status)
+		}
+	})
+
+	t.Run("REST: captcha", func(t *testing.T) {
+		resp, err := http.Get(fmt.Sprintf("http://localhost%s/api/captcha", serverConfig.HTTPAddress))
+		if err != nil {
+			t.Fatalf("REST call failed: %v", err)
+		}
+		defer resp.Body.Close()
+
+		if resp.StatusCode != http.StatusOK {
+			t.Fatalf("Unexpected status: got %d", resp.StatusCode)
+		}
+
+		var getResult openapi.Captcha
+		if err := json.NewDecoder(resp.Body).Decode(&getResult); err != nil {
+			t.Fatalf("Failed to parse REST response: %v", err)
+		}
+
+		if common.IsBlank(getResult.CaptchaToken) {
+			t.Errorf("wrong captcha token: got %s", getResult.CaptchaToken)
+		}
+
+		jsonData, err := json.Marshal(openapi.CaptchaData{
+			CaptchaToken: getResult.CaptchaToken,
+			CaptchaText:  "123",
+		})
+		if err != nil {
+			t.Fatalf("Failed to marshall REST body: %v", err)
+		}
+
+		resp, err = http.Post(fmt.Sprintf("http://localhost%s/api/captcha", serverConfig.HTTPAddress), "application/json", bytes.NewBuffer(jsonData))
+		if err != nil {
+			t.Fatalf("REST call failed: %v", err)
+		}
+
+		if resp.StatusCode != http.StatusOK {
+			t.Fatalf("Unexpected status: got %d", resp.StatusCode)
+		}
+
+		var postResult openapi.BooleanValue
+		if err := json.NewDecoder(resp.Body).Decode(&postResult); err != nil {
+			t.Fatalf("Failed to parse REST response: %v", err)
+		}
+		assert.False(t, postResult.Value)
 	})
 
 	syscall.Kill(syscall.Getpid(), syscall.SIGTERM)

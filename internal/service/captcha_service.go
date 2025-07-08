@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"github.com/fogleman/gg"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/janobono/captcha-service/generated/openapi"
 	"github.com/janobono/captcha-service/internal/config"
 	"github.com/janobono/go-util/security"
 	"image/png"
@@ -17,16 +18,6 @@ import (
 )
 
 const tokenKey = "encodedText"
-
-type CaptchaDetail struct {
-	CaptchaToken string
-	CaptchaImage string
-}
-
-type CaptchaData struct {
-	CaptchaToken string
-	CaptchaValue string
-}
 
 type CaptchaService struct {
 	appConfig       *config.AppConfig
@@ -42,7 +33,7 @@ func NewCaptchaService(appConfig *config.AppConfig) *CaptchaService {
 	}
 }
 
-func (s *CaptchaService) Create(ctx context.Context) (*CaptchaDetail, error) {
+func (s *CaptchaService) Create(ctx context.Context) (*openapi.Captcha, error) {
 	randomText, err := s.randomString()
 	if err != nil {
 		return nil, err
@@ -68,30 +59,30 @@ func (s *CaptchaService) Create(ctx context.Context) (*CaptchaDetail, error) {
 		return nil, err
 	}
 
-	return &CaptchaDetail{
+	return &openapi.Captcha{
 		CaptchaToken: captchaToken,
 		CaptchaImage: captchaImage,
 	}, nil
 }
 
-func (s *CaptchaService) Validate(ctx context.Context, captchaData *CaptchaData) bool {
+func (s *CaptchaService) Validate(ctx context.Context, captchaData *openapi.CaptchaData) *openapi.BooleanValue {
 	if captchaData == nil {
-		return false
+		return &openapi.BooleanValue{Value: false}
 	}
 
 	jwtToken, err := s.jwtService.getJwtToken()
 	if err != nil {
-		return false
+		return &openapi.BooleanValue{Value: false}
 	}
 
 	claims, err := jwtToken.ParseToken(ctx, captchaData.CaptchaToken)
 	if err != nil {
-		return false
+		return &openapi.BooleanValue{Value: false}
 	}
 
 	encodedText := ((*claims)[tokenKey]).(string)
 
-	return s.passwordEncoder.Compare(captchaData.CaptchaValue, encodedText) == nil
+	return &openapi.BooleanValue{Value: s.passwordEncoder.Compare(captchaData.CaptchaText, encodedText) == nil}
 }
 
 func (s *CaptchaService) randomString() (string, error) {

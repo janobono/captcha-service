@@ -12,7 +12,7 @@ func NewRouter(handleFunctions openapi.ApiHandleFunctions, contextPath string) *
 	return NewRouterWithGinEngine(gin.Default(), handleFunctions, contextPath)
 }
 
-// NewRouter add routes to existing gin engine.
+// NewRouterWithGinEngine add routes to existing gin engine.
 func NewRouterWithGinEngine(router *gin.Engine, handleFunctions openapi.ApiHandleFunctions, contextPath string) *gin.Engine {
 	group := router.Group(contextPath)
 
@@ -45,6 +45,12 @@ func getRoutes(handleFunctions openapi.ApiHandleFunctions) []openapi.Route {
 			http.MethodGet,
 			"/captcha",
 			handleFunctions.CaptchaControllerAPI.GetCaptcha,
+		},
+		{
+			"ValidateCaptcha",
+			http.MethodPost,
+			"/captcha",
+			handleFunctions.CaptchaControllerAPI.ValidateCaptcha,
 		},
 		{
 			"Livez",

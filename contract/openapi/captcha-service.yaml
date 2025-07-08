@@ -27,6 +27,35 @@ paths:
           description: Server error
       tags:
         - captcha-controller
+    post:
+      operationId: validateCaptcha
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaptchaData'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BooleanValue'
+          description: OK
+        "4XX":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+          description: Client error
+        "5XX":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+          description: Server error
+      tags:
+        - captcha-controller
   /livez:
     get:
       operationId: livez
@@ -90,6 +119,13 @@ components:
             $ref: '#/components/schemas/ErrorMessage'
       description: Server error
   schemas:
+    BooleanValue:
+      type: object
+      required:
+        - value
+      properties:
+        value:
+          type: boolean
     Captcha:
       type: object
       properties:
@@ -97,10 +133,22 @@ components:
           type: string
         captchaImage:
           type: string
+    CaptchaData:
+      type: object
+      required:
+        - captchaToken
+        - captchaText
+      properties:
+        captchaToken:
+          type: string
+        captchaText:
+          type: string
     ErrorCode:
       type: string
       enum:
         - UNKNOWN
+        - INVALID_REQUEST
+        - INVALID_FIELD
     ErrorMessage:
       type: object
       properties:

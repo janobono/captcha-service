@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/janobono/captcha-service/generated/openapi"
 	"github.com/janobono/captcha-service/internal/config"
 	"strings"
 	"testing"
@@ -39,11 +40,11 @@ func TestCaptchaService(t *testing.T) {
 	}
 
 	// Step 2: Validate wrong value
-	wrong := &CaptchaData{
+	wrong := &openapi.CaptchaData{
 		CaptchaToken: detail.CaptchaToken,
-		CaptchaValue: "WRONG",
+		CaptchaText:  "WRONG",
 	}
-	if captchaService.Validate(ctx, wrong) {
+	if captchaService.Validate(ctx, wrong).Value {
 		t.Error("Expected CAPTCHA validation to fail with incorrect input")
 	}
 }

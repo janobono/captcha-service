@@ -34,7 +34,7 @@ docker compose down
 
 ## make
 
-If you have `make` and Go installed, you can use these prepared targets:
+If you have `make`, `Go` an `node.js` installed, you can use these prepared targets:
 
 - `tools` - to install all tools and modules
 - `clean` - to delete all generated sources
