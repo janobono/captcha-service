@@ -1,0 +1,36 @@
+get:
+  operationId: getCaptcha
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/captcha.yaml#/Captcha'
+      description: OK
+    "4XX":
+      $ref: '../components/responses/client-error.yaml'
+    "5XX":
+      $ref: '../components/responses/server-error.yaml'
+  tags:
+    - captcha-controller
+post:
+  operationId: validateCaptcha
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: '../components/schemas/captcha.yaml#/CaptchaData'
+    required: true
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/boolean-value.yaml#/BooleanValue'
+      description: OK
+    "4XX":
+      $ref: '../components/responses/client-error.yaml'
+    "5XX":
+      $ref: '../components/responses/server-error.yaml'
+  tags:
+    - captcha-controller

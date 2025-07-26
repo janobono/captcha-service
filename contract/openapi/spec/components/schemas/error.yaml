@@ -1,0 +1,16 @@
+ErrorCode:
+  type: string
+  enum:
+    - UNKNOWN
+    - INVALID_REQUEST
+    - INVALID_FIELD
+ErrorMessage:
+  type: object
+  properties:
+    code:
+      $ref: '#/ErrorCode'
+    message:
+      type: string
+    timestamp:
+      format: date-time
+      type: string

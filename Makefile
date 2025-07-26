@@ -21,6 +21,8 @@ clean:
 
 generate-openapi:
 	@echo "  > Generate openapi source files"
+	docker run --rm -v ${PWD}/contract/openapi/spec:/spec redocly/cli bundle /spec/openapi.yaml -o /spec/captcha-service.yaml &&\
+	mv -f contract/openapi/spec/captcha-service.yaml contract/openapi/captcha-service.yaml &&\
 	openapi-generator-cli generate \
 	--generator-name go-gin-server \
 	--input-spec contract/openapi/captcha-service.yaml \

@@ -1,0 +1,11 @@
+openapi: 3.1.1
+info:
+  title: Captcha Service
+  version: 1.0.0
+paths:
+  /captcha:
+    $ref: './paths/captcha.yaml'
+  /livez:
+    $ref: './paths/livez.yaml'
+  /readyz:
+    $ref: './paths/readyz.yaml'

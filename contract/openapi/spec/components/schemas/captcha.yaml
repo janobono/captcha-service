@@ -1,0 +1,17 @@
+Captcha:
+  type: object
+  properties:
+    captchaToken:
+      type: string
+    captchaImage:
+      type: string
+CaptchaData:
+  type: object
+  required:
+    - captchaToken
+    - captchaText
+  properties:
+    captchaToken:
+      type: string
+    captchaText:
+      type: string
