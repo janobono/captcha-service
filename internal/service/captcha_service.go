@@ -3,7 +3,6 @@ package service
 import (
 	"bytes"
 	"context"
-	crypto "crypto/rand"
 	"encoding/base64"
 	"fmt"
 	"github.com/fogleman/gg"
@@ -12,9 +11,7 @@ import (
 	"github.com/janobono/captcha-service/internal/config"
 	"github.com/janobono/go-util/security"
 	"image/png"
-	"math/big"
 	"math/rand"
-	"strings"
 )
 
 const tokenKey = "encodedText"
@@ -22,6 +19,7 @@ const tokenKey = "encodedText"
 type CaptchaService struct {
 	appConfig       *config.AppConfig
 	passwordEncoder *security.PasswordEncoder
+	randomString    *security.RandomString
 	jwtService      *JwtService
 }
 
@@ -29,12 +27,13 @@ func NewCaptchaService(appConfig *config.AppConfig) *CaptchaService {
 	return &CaptchaService{
 		appConfig:       appConfig,
 		passwordEncoder: security.NewPasswordEncoder(10),
+		randomString:    security.NewRandomString(appConfig.Characters, appConfig.TextLength),
 		jwtService:      NewJwtService(appConfig),
 	}
 }
 
 func (s *CaptchaService) Create(ctx context.Context) (*openapi.Captcha, error) {
-	randomText, err := s.randomString()
+	randomText, err := s.randomString.Generate()
 	if err != nil {
 		return nil, err
 	}
@@ -83,19 +82,6 @@ func (s *CaptchaService) Validate(ctx context.Context, captchaData *openapi.Capt
 	encodedText := ((*claims)[tokenKey]).(string)
 
 	return &openapi.BooleanValue{Value: s.passwordEncoder.Compare(captchaData.CaptchaText, encodedText) == nil}
-}
-
-func (s *CaptchaService) randomString() (string, error) {
-	var builder strings.Builder
-	builder.Grow(s.appConfig.TextLength)
-	for i := 0; i < s.appConfig.TextLength; i++ {
-		num, err := crypto.Int(crypto.Reader, big.NewInt(int64(len(s.appConfig.Characters))))
-		if err != nil {
-			return "", fmt.Errorf("failed to generate random string: %w", err)
-		}
-		builder.WriteByte(s.appConfig.Characters[num.Int64()])
-	}
-	return builder.String(), nil
 }
 
 func (s *CaptchaService) generateImage(text string) (string, error) {
