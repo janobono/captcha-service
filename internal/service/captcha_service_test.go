@@ -4,6 +4,9 @@ import (
 	"context"
 	"github.com/janobono/captcha-service/generated/openapi"
 	"github.com/janobono/captcha-service/internal/config"
+	"os"
+	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 	"time"
@@ -15,7 +18,7 @@ func TestCaptchaService(t *testing.T) {
 		TextLength:        8,
 		Width:             200,
 		Height:            70,
-		Font:              "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+		Font:              getFontPath(),
 		FontSize:          36,
 		NoiseLines:        8,
 		TokenIssuer:       "captcha-service",
@@ -47,4 +50,39 @@ func TestCaptchaService(t *testing.T) {
 	if captchaService.Validate(ctx, wrong).Value {
 		t.Error("Expected CAPTCHA validation to fail with incorrect input")
 	}
+}
+
+func getFontPath() string {
+	// First: check if an environment variable is set to override font path
+	if customFont := os.Getenv("CAPTCHA_FONT"); customFont != "" {
+		return customFont
+	}
+
+	switch runtime.GOOS {
+	case "darwin": // macOS
+		possiblePaths := []string{
+			"/System/Library/Fonts/Supplemental/Arial Bold.ttf",
+			"/System/Library/Fonts/Supplemental/Verdana Bold.ttf",
+			"/Library/Fonts/Arial Bold.ttf",
+			filepath.Join(os.Getenv("HOME"), "Library/Fonts/Arial Bold.ttf"),
+		}
+		for _, p := range possiblePaths {
+			if _, err := os.Stat(p); err == nil {
+				return p
+			}
+		}
+	case "linux":
+		possiblePaths := []string{
+			"/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+			"/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
+		}
+		for _, p := range possiblePaths {
+			if _, err := os.Stat(p); err == nil {
+				return p
+			}
+		}
+	}
+
+	// Fallback: empty string (server might handle missing font)
+	return ""
 }

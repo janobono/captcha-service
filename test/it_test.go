@@ -16,6 +16,9 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 	"net"
 	"net/http"
+	"os"
+	"path/filepath"
+	"runtime"
 	"syscall"
 	"testing"
 	"time"
@@ -38,7 +41,7 @@ func TestIntegrationSomething(t *testing.T) {
 			Width:             200,
 			Height:            70,
 			NoiseLines:        8,
-			Font:              "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+			Font:              getFontPath(),
 			FontSize:          32,
 			TokenIssuer:       "captcha",
 			TokenExpiresIn:    time.Duration(30) * time.Minute,
@@ -186,4 +189,39 @@ func getFreePorts(count int) (*[]string, error) {
 		ports = append(ports, fmt.Sprintf(":%d", addr.Port))
 	}
 	return &ports, nil
+}
+
+func getFontPath() string {
+	// First: check if an environment variable is set to override font path
+	if customFont := os.Getenv("CAPTCHA_FONT"); customFont != "" {
+		return customFont
+	}
+
+	switch runtime.GOOS {
+	case "darwin": // macOS
+		possiblePaths := []string{
+			"/System/Library/Fonts/Supplemental/Arial Bold.ttf",
+			"/System/Library/Fonts/Supplemental/Verdana Bold.ttf",
+			"/Library/Fonts/Arial Bold.ttf",
+			filepath.Join(os.Getenv("HOME"), "Library/Fonts/Arial Bold.ttf"),
+		}
+		for _, p := range possiblePaths {
+			if _, err := os.Stat(p); err == nil {
+				return p
+			}
+		}
+	case "linux":
+		possiblePaths := []string{
+			"/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+			"/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
+		}
+		for _, p := range possiblePaths {
+			if _, err := os.Stat(p); err == nil {
+				return p
+			}
+		}
+	}
+
+	// Fallback: empty string (server might handle missing font)
+	return ""
 }
