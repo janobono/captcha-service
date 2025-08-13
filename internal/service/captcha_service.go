@@ -5,13 +5,14 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"image/png"
+	"math/rand"
+
 	"github.com/fogleman/gg"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/janobono/captcha-service/generated/openapi"
 	"github.com/janobono/captcha-service/internal/config"
 	"github.com/janobono/go-util/security"
-	"image/png"
-	"math/rand"
 )
 
 const tokenKey = "encodedText"
@@ -79,7 +80,7 @@ func (s *CaptchaService) Validate(ctx context.Context, captchaData *openapi.Capt
 		return &openapi.BooleanValue{Value: false}
 	}
 
-	encodedText := ((*claims)[tokenKey]).(string)
+	encodedText := ((claims)[tokenKey]).(string)
 
 	return &openapi.BooleanValue{Value: s.passwordEncoder.Compare(captchaData.CaptchaText, encodedText) == nil}
 }
